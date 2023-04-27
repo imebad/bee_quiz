@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateCinemaSchema extends Migration
 {
+
     /** ToDo: Create a migration that creates all tables for the following user stories
 
     For an example on how a UI for an api using this might look like, please try to book a show at https://in.bookmyshow.com/.
@@ -36,7 +37,58 @@ class CreateCinemaSchema extends Migration
      */
     public function up()
     {
-        throw new \Exception('implement in coding task 4, you can ignore this exception if you are just running the initial migrations.');
+
+        Schema::create('showroom', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('movie', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->unsignedBigInteger('showroom_id');
+            $table->timestamp('start');
+            $table->timestamp('end');
+            $table->boolean('housefull')->default(false);
+            $table->timestamps();
+            $table->foreign('showroom_id')
+                ->references('id')->on('showroom')->onDelete('cascade');
+        });
+
+
+        Schema::create('seat', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('showroom_id');
+            $table->integer('row');
+            $table->integer('seat_number');
+            $table->enum('type', array('Normal','VIP'))->default('Normal');
+            $table->float('amount');
+            $table->timestamps();
+            $table->foreign('showroom_id')
+                ->references('id')->on('showroom')->onDelete('cascade');
+        });
+
+        Schema::create('reservation', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('movie_id');
+            $table->unsignedBigInteger('showroom_id');
+            $table->unsignedBigInteger('seat_id');
+            $table->float('amount_paid');
+            $table->timestamps();
+
+            $table->foreign('movie_id')
+                ->references('id')->on('movie')->onDelete('cascade');
+
+            $table->foreign('showroom_id')
+                ->references('id')->on('showroom')->onDelete('cascade');
+
+            $table->foreign('seat_id')
+                ->references('id')->on('seat')->onDelete('cascade');
+        });
+
+
+//        throw new \Exception('implement in coding task 4, you can ignore this exception if you are just running the initial migrations.');
     }
 
     /**
@@ -46,5 +98,9 @@ class CreateCinemaSchema extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('showroom');
+        Schema::dropIfExists('movie');
+        Schema::dropIfExists('seat');
+        Schema::dropIfExists('reservation');
     }
 }
