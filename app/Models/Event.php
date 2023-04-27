@@ -2,9 +2,14 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
+
+
+    public function getWorkshops()
+    {
+        return $this->hasMany(Workshop::class, 'event_id', 'id');
+    }
 }
