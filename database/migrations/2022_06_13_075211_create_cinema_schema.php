@@ -98,9 +98,10 @@ class CreateCinemaSchema extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('showroom');
+        Schema::dropIfExists('reservation');
         Schema::dropIfExists('movie');
         Schema::dropIfExists('seat');
-        Schema::dropIfExists('reservation');
+        Schema::dropIfExists('showroom');
+
     }
 }
